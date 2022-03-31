@@ -165,18 +165,14 @@ class TraceProcessor(Thread):
             full_name_list = []
 
             # Work out the module name
-            module = inspect.getmodule(code)
-            if module:
-                module_name = module.__name__
-                module_path = module.__file__
+            module_path = code.co_filename
+            module_name = inspect.getmodulename(module_path) or ''
 
-                if not self.config.include_stdlib \
-                        and self.is_module_stdlib(module_path):
-                    keep = False
+            if not self.config.include_stdlib \
+                    and self.is_module_stdlib(module_path):
+                keep = False
 
-                if module_name == '__main__':
-                    module_name = ''
-            else:
+            if module_name == '__main__':
                 module_name = ''
 
             if module_name:
@@ -269,10 +265,14 @@ class TraceProcessor(Thread):
 
     def is_module_stdlib(self, file_name):
         """
-        Returns True if the file_name is in the lib directory. Used to check
-        if a function is in the standard library or not.
+        Returns True if the file_name is in the lib/site-packages directory, 
+        or in the stdlib directory.
         """
-        return file_name.lower().startswith(self.lib_path)
+        result = file_name.lower().startswith(self.lib_path)
+        if result:
+            return True
+        return file_name.lower().startswith(sys.base_prefix.lower())
+
 
     def __getstate__(self):
         """Used for when creating a pickle. Certain instance variables can't
