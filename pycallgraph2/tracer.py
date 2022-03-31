@@ -192,7 +192,7 @@ class TraceProcessor(Thread):
             full_name_list.append(func_name)
 
             # Create a readable representation of the current call
-            full_name = '.'.join(full_name_list) or ''
+            full_name = '.'.join(full_name_list) if module_name else ''
 
             if len(self.call_stack) > self.config.max_depth:
                 keep = False
@@ -206,7 +206,7 @@ class TraceProcessor(Thread):
             if keep:
 
                 if self.config.verbose:
-                    print(frame, f"module name: {module_name}")
+                    print(f"{frame}, module name: '{module_name}'")
 
                 if self.call_stack:
                     src_func = self.call_stack[-1]
