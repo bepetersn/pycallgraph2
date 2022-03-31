@@ -192,7 +192,7 @@ class TraceProcessor(Thread):
             full_name_list.append(func_name)
 
             # Create a readable representation of the current call
-            full_name = '.'.join(full_name_list)
+            full_name = '.'.join(full_name_list) or ''
 
             if len(self.call_stack) > self.config.max_depth:
                 keep = False
