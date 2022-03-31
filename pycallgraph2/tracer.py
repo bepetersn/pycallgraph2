@@ -205,6 +205,9 @@ class TraceProcessor(Thread):
             # Store the call information
             if keep:
 
+                if self.config.verbose:
+                    print(frame, f"module name: {module_name}")
+
                 if self.call_stack:
                     src_func = self.call_stack[-1]
                 else:
